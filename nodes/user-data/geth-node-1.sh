@@ -6,7 +6,7 @@ set -x
 GETH_USER="geth"
 GETH_HOME="/home/geth"
 SECRET_FILE="/opt/secrets/jwt.hex"
-
+INFLUXDB_PASSWORD="changeme"
 # Create secrets directory
 sudo mkdir -p /opt/secrets
 openssl rand -hex 32 | tr -d "\n" | sudo tee $SECRET_FILE
@@ -43,7 +43,7 @@ Type=simple
 User=$GETH_USER
 Group=$GETH_USER
 WorkingDirectory=$GETH_HOME
-ExecStart=/usr/bin/geth --sepolia --authrpc.addr localhost --authrpc.port 8551 --authrpc.vhosts localhost --authrpc.jwtsecret $SECRET_FILE --datadir /opt/data/geth
+ExecStart=/usr/bin/geth --sepolia --authrpc.addr localhost --authrpc.port 8551 --authrpc.vhosts localhost --authrpc.jwtsecret $SECRET_FILE --datadir /opt/data/geth --metrics --metrics.influxdb --metrics.influxdb.endpoint "http://0.0.0.0:8086" --metrics.influxdb.username "geth" --metrics.influxdb.password $INFLUXDB_PASSWORD
 Restart=always
 RestartSec=10
 StandardOutput=journal
